@@ -212,9 +212,12 @@
 
   body {
     @apply text-foreground font-body antialiased;
-    /* Sem `bg-background` aqui: o <AppBackground /> (SVG fixo, z-0) já
-       pinta essa cor base através do seu próprio <rect>, além das massas
-       verde/amarelo/azul decorativas por cima dela. */
+    /* Creme fixo (não `bg-background`/token de tema) medido por amostragem
+       de pixel na própria imagem de referência do `AppBackground` — as duas
+       imagens PNG do fundo (v5) têm bordas com alfa esmaecido, então essa
+       cor precisa bater com o creme real delas para a transição ficar
+       invisível. Igual em Claro/Escuro (asset de marca fixo). */
+    background-color: #f4f6e8;
     padding-bottom: env(safe-area-inset-bottom);
   }
 
