@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, ArrowLeftRight, Plus, User } from "lucide-react";
+import { Home, ArrowLeftRight, Bell, Plus, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -11,9 +11,16 @@ interface NavItem {
   icon: typeof Home;
 }
 
+/**
+ * 4 itens (2 antes do FAB "Anunciar", 2 depois) — "Notificações" entrou
+ * aqui a pedido do usuário: como o `AppHeader` (onde ficava o sino) some no
+ * mobile agora (ver `app-header.tsx`), a `BottomNav` — onde já ficam as
+ * outras interações do usuário — passou a ser o lugar do sino também.
+ */
 const NAV_ITEMS: NavItem[] = [
   { href: "/", label: "Início", icon: Home },
   { href: "/propostas", label: "Propostas", icon: ArrowLeftRight },
+  { href: "/notificacoes", label: "Avisos", icon: Bell },
   { href: "/perfil", label: "Perfil", icon: User },
 ];
 
@@ -23,10 +30,16 @@ const NAV_ITEMS: NavItem[] = [
  * nelas a BottomNav global sai para não empilhar duas barras fixas na
  * mesma área de toque.
  */
-const OCULTAR_EM = ["/cadastro"];
+const OCULTAR_EM = ["/cadastro", "/login"];
 
 function deveOcultar(pathname: string) {
-  return OCULTAR_EM.includes(pathname) || pathname.startsWith("/anuncios/");
+  return (
+    OCULTAR_EM.includes(pathname) ||
+    pathname.startsWith("/anuncios/") ||
+    // O Admin tem sua própria navegação (ver `src/app/admin/layout.tsx`) —
+    // a barra de navegação do consumidor não faz sentido lá.
+    pathname.startsWith("/admin")
+  );
 }
 
 /**

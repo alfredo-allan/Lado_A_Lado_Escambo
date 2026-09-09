@@ -109,13 +109,16 @@ export function AnuncioDetalhe({ anuncio }: { anuncio: Anuncio }) {
   }
 
   /**
-   * Regra de produto: navegar é livre, interagir exige cadastro. `usuario`
-   * vem de `useUsuarioAtual()` (hoje sempre `null` — ver `src/lib/auth.ts`).
+   * Regra de produto: navegar é livre, interagir exige sessão. `usuario`
+   * vem de `useUsuarioAtual()`, que agora lê a sessão real do `AuthProvider`
+   * (ver `src/lib/auth-context.tsx`) — deixou de ser sempre `null`. Manda
+   * pro Login (não direto pro Cadastro) porque quem já tem conta só precisa
+   * entrar; `?next=` traz de volta pra esta mesma tela depois.
    */
   function exigirCadastro(acao: () => void) {
     if (!usuario) {
-      mostrarAviso("Crie sua conta para continuar essa ação.");
-      router.push("/cadastro");
+      mostrarAviso("Faça login para continuar essa ação.");
+      router.push(`/login?next=/anuncios/${anuncio.id}`);
       return;
     }
     acao();
@@ -133,7 +136,7 @@ export function AnuncioDetalhe({ anuncio }: { anuncio: Anuncio }) {
         </Link>
         <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-container/20 px-3 py-1.5">
           <ShieldCheck className="size-4 text-primary" />
-          <span className="font-display text-xs font-bold uppercase tracking-wide text-primary">Verificado no Campo</span>
+          <span className="font-display text-xs font-bold uppercase tracking-wide text-primary">Anúncio Verificado</span>
         </span>
       </div>
 
@@ -409,7 +412,7 @@ export function AnuncioDetalhe({ anuncio }: { anuncio: Anuncio }) {
             <Button
               variant="outline"
               className="h-12 flex-1"
-              onClick={() => exigirCadastro(() => mostrarAviso(`Abrindo conversa com ${anuncio.vendedor.nome}...`))}
+              onClick={() => exigirCadastro(() => router.push(`/anuncios/${anuncio.id}/conversa`))}
             >
               <MessageCircle className="size-5 text-primary" />
               Conversar com {anuncio.vendedor.nome.split(" ")[0]}
@@ -432,7 +435,14 @@ export function AnuncioDetalhe({ anuncio }: { anuncio: Anuncio }) {
       )}
 
       {aviso && (
-        <div className="fixed left-1/2 top-20 z-50 -translate-x-1/2 rounded-full bg-inverse-surface px-4 py-2.5 text-inverse-on-surface shadow-lg">
+        // `top-32 md:top-48`, não `top-20`: esta tela tem duas barras locais
+        // (voltar/"Anúncio Verificado" + favoritar/compartilhar) empilhadas
+        // antes do carrossel — um `top-20` fixo caía bem em cima do texto do
+        // selo "Anúncio Verificado", sobrepondo as letras (bug reportado
+        // pelo usuário). Os dois valores foram calculados para ficar sempre
+        // logo abaixo dessas duas barras: sem `AppHeader` no mobile (< md,
+        // ver `app-header.tsx`) e com ele em telas >= md.
+        <div className="fixed left-1/2 top-32 z-50 -translate-x-1/2 rounded-full bg-inverse-surface px-4 py-2.5 text-inverse-on-surface shadow-lg md:top-48">
           <span className="font-display text-sm font-bold">{aviso}</span>
         </div>
       )}
@@ -492,7 +502,7 @@ function PropostaSheet({
               <Handshake className="size-5 text-primary" />
               <div>
                 <p className="font-display text-sm font-bold text-foreground">Item do meu inventário</p>
-                <p className="text-xs text-muted-foreground">Ferramenta, animal, grãos ou sementes</p>
+                <p className="text-xs text-muted-foreground">Eletrônico, roupa, móvel ou outro item</p>
               </div>
             </div>
             <input
@@ -527,7 +537,7 @@ function PropostaSheet({
           </label>
           <Textarea
             id="mensagem-proposta"
-            placeholder="Ex: Olá! Tenho uma sela quarto de milha novinha com nota fiscal..."
+            placeholder="Ex: Olá! Tenho um smartphone seminovo com nota fiscal, topa avaliar?"
             value={mensagem}
             onChange={(e) => setMensagem(e.target.value)}
             rows={3}

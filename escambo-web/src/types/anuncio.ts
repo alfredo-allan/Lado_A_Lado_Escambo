@@ -56,4 +56,6 @@ export interface Anuncio {
   vendedor: Vendedor;
   /** Presente apenas para anúncios de animais. */
   fichaAnimal?: FichaAnimal;
+  /** Destaque manual dado pelo Admin (Moderação de Anúncios) — não vem do anunciante. */
+  destaque?: boolean;
 }

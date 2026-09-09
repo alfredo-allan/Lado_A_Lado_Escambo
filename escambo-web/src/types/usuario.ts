@@ -42,6 +42,17 @@ export type UF =
   | "SE"
   | "TO";
 
+/**
+ * Papel de acesso do usuário — controla o que a UI mostra (ver
+ * `src/lib/auth-context.tsx`). "admin" é uma conta de equipe interna, não
+ * algo que o cadastro público concede; hoje só existe uma via mock
+ * (`ADMIN_ATUAL_MOCK`), nunca criada pelo formulário de Cadastro.
+ */
+export type PapelUsuario = "usuario" | "admin";
+
+/** Estado da conta, controlado pelo Admin (Central de Usuários). */
+export type StatusConta = "ativo" | "suspenso";
+
 export interface Usuario {
   id: string;
   nome: string;
@@ -58,6 +69,8 @@ export interface Usuario {
     nota: number;
     trocasConcluidas: number;
   };
+  papel: PapelUsuario;
+  status: StatusConta;
 }
 
 /** Payload enviado pelo formulário de Cadastro (Etapa 2). */
@@ -87,3 +100,13 @@ export interface ConsentimentoLGPD {
 export type CadastroResultado =
   | { ok: true; usuario: Usuario }
   | { ok: false; erro: string; campo?: keyof CadastroInput };
+
+/** Payload do formulário de Login (`/login`). */
+export interface LoginInput {
+  email: string;
+  senha: string;
+}
+
+export type LoginResultado =
+  | { ok: true; usuario: Usuario }
+  | { ok: false; erro: string };

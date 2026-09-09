@@ -30,7 +30,16 @@ export function Logo({ size = 'md', withWordmark = true, className }: LogoProps)
 
   return (
     <div className={cn('flex items-center gap-2', className)}>
-      <Image src="/logo-escambo.png" alt="Escambo" width={width} height={height} priority quality={100} unoptimized className="shrink-0" />
+      <Image
+        src="/escambo-web/public/logo-escambo.png"
+        alt="Escambo"
+        width={width}
+        height={height}
+        priority
+        quality={100}
+        unoptimized
+        className="shrink-0"
+      />
       {withWordmark && <span className="font-display text-lg font-extrabold tracking-tight text-foreground hidden">escambo</span>}
     </div>
   )

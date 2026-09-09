@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent, type ReactNode } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -30,38 +31,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { criarUsuario } from "@/lib/api/usuarios";
 import { isValidCPF, isValidEmail, isValidTelefone, maskCPF, maskTelefone } from "@/lib/validators";
 import { cn } from "@/lib/utils";
+import { ESTADOS } from "@/lib/estados";
+import { useAuth } from "@/lib/auth-context";
 import type { CadastroInput, UF, Usuario } from "@/types/usuario";
-
-/** Todas as UFs do Brasil — o Escambo é uma plataforma nacional. */
-const ESTADOS: { value: UF; label: string }[] = [
-  { value: "AC", label: "Acre (AC)" },
-  { value: "AL", label: "Alagoas (AL)" },
-  { value: "AP", label: "Amapá (AP)" },
-  { value: "AM", label: "Amazonas (AM)" },
-  { value: "BA", label: "Bahia (BA)" },
-  { value: "CE", label: "Ceará (CE)" },
-  { value: "DF", label: "Distrito Federal (DF)" },
-  { value: "ES", label: "Espírito Santo (ES)" },
-  { value: "GO", label: "Goiás (GO)" },
-  { value: "MA", label: "Maranhão (MA)" },
-  { value: "MT", label: "Mato Grosso (MT)" },
-  { value: "MS", label: "Mato Grosso do Sul (MS)" },
-  { value: "MG", label: "Minas Gerais (MG)" },
-  { value: "PA", label: "Pará (PA)" },
-  { value: "PB", label: "Paraíba (PB)" },
-  { value: "PR", label: "Paraná (PR)" },
-  { value: "PE", label: "Pernambuco (PE)" },
-  { value: "PI", label: "Piauí (PI)" },
-  { value: "RJ", label: "Rio de Janeiro (RJ)" },
-  { value: "RN", label: "Rio Grande do Norte (RN)" },
-  { value: "RS", label: "Rio Grande do Sul (RS)" },
-  { value: "RO", label: "Rondônia (RO)" },
-  { value: "RR", label: "Roraima (RR)" },
-  { value: "SC", label: "Santa Catarina (SC)" },
-  { value: "SP", label: "São Paulo (SP)" },
-  { value: "SE", label: "Sergipe (SE)" },
-  { value: "TO", label: "Tocantins (TO)" },
-];
 
 const FORM_INICIAL: CadastroInput = {
   nome: "",
@@ -79,6 +51,7 @@ const FORM_INICIAL: CadastroInput = {
  * incluindo onde entra o registro de consentimento LGPD.
  */
 export default function CadastroPage() {
+  const { entrarComUsuario } = useAuth();
   const [form, setForm] = useState<CadastroInput>(FORM_INICIAL);
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
@@ -114,6 +87,9 @@ export default function CadastroPage() {
     setEnviando(false);
 
     if (resultado.ok) {
+      // Cadastro concluído já abre sessão — não faz sentido pedir pra logar
+      // de novo logo em seguida (ver `src/lib/auth-context.tsx`).
+      entrarComUsuario(resultado.usuario);
       setUsuarioCriado(resultado.usuario);
     } else {
       setErro(resultado.erro);
@@ -138,6 +114,29 @@ export default function CadastroPage() {
           <ShieldCheck className="size-4 text-primary" />
           <span className="font-display text-xs font-bold tracking-wide text-primary">Cadastro Seguro</span>
         </div>
+      </div>
+
+      {/* Logo em alta definição, bem visível no topo do Cadastro — pedido
+          explícito do usuário a partir do frame de referência do colaborador
+          (ícone + wordmark + laços completos, sem recorte, + tagline
+          colorida logo abaixo). Usa o arquivo canônico 1600×1112 em
+          `public/logo-escambo.png` (ver `logo.tsx` para o mesmo padrão de
+          `unoptimized`/`quality=100`). */}
+      <div className="mb-6 flex flex-col items-center gap-3 text-center">
+        <Image
+          src="/logo-escambo.png"
+          alt="Escambo"
+          width={1600}
+          height={1112}
+          priority
+          quality={100}
+          unoptimized
+          className="h-auto w-56 sm:w-64"
+        />
+        <p className="font-display text-sm font-bold tracking-wide">
+          <span className="text-primary">Troque.</span> <span className="text-secondary">Economize.</span>{" "}
+          <span className="text-tertiary">Reutilize.</span>
+        </p>
       </div>
 
       <header className="mb-6">
@@ -409,12 +408,17 @@ function CadastroSucesso({ usuario }: { usuario: Usuario }) {
         Bem-vindo ao Escambo, {usuario.nome.split(" ")[0]}!
       </h1>
       <p className="mb-6 text-muted-foreground">
-        Seu cadastro foi realizado com sucesso e seus dados estão protegidos pela LGPD. Agora você pode publicar sua
-        primeira oferta ou explorar as trocas disponíveis na sua região.
+        Seu cadastro foi realizado com sucesso e seus dados estão protegidos pela LGPD. Você já está conectado(a) —
+        agora pode publicar sua primeira oferta ou explorar as trocas disponíveis na sua região.
       </p>
-      <Button asChild size="lg" className="w-full">
-        <Link href="/">Começar a Trocar</Link>
-      </Button>
+      <div className="flex w-full flex-col gap-2">
+        <Button asChild size="lg" className="w-full">
+          <Link href="/anunciar">Anunciar meu primeiro item</Link>
+        </Button>
+        <Button asChild variant="outline" size="lg" className="w-full">
+          <Link href="/">Começar a Trocar</Link>
+        </Button>
+      </div>
     </div>
   );
 }

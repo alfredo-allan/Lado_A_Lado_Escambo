@@ -74,51 +74,65 @@
   --chart-5: var(--destructive);
 }
 
+/* O tema Escuro foi originalmente desenhado para uma casca de app escura
+   (fundo quase preto, cards quase pretos, texto quase branco). Isso deixou
+   de fazer sentido a partir do `AppBackground` v2+: o fundo do app é hoje
+   uma imagem/composição de marca fixa e sempre clara (creme + verde/
+   dourado/azul vivos), igual nos dois temas — o usuário testou manter o
+   fundo preto no Escuro e "ficou ruim" (cards pretos flutuando sobre uma
+   imagem clara, texto claro-sobre-claro quase invisível nos labels/
+   placeholders). Ajuste pedido explicitamente: manter o fundo sempre claro
+   e só corrigir a relação de cores de fonte/campo no tema Escuro, podendo
+   inclusive ficar igual ao Claro. Por ora os tokens neutros e de marca do
+   `.dark` foram igualados aos do `:root` (mesmos valores) — o hook/seletor
+   `.dark` continua existindo (o toggle Claro/Escuro/Automático não foi
+   removido), então uma diferenciação sutil pode ser reintroduzida depois
+   aqui sem tocar em nenhum componente. */
 .dark {
-  --background: 0 0% 7%;
-  --foreground: 0 0% 88%;
+  --background: 40 43% 97%;
+  --foreground: 60 8% 10%;
 
-  --card: 0 0% 12%;
-  --card-foreground: 0 0% 88%;
+  --card: 0 0% 100%;
+  --card-foreground: 60 8% 10%;
 
-  --popover: 0 0% 12%;
-  --popover-foreground: 0 0% 88%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 60 8% 10%;
 
-  --border: 0 0% 18%;
-  --input: 0 0% 23%;
-  --ring: 115 49% 69%;
+  --border: 42 32% 88%;
+  --input: 40 20% 80%;
+  --ring: 124 55% 24%;
 
-  --muted: 0 0% 15%;
-  --muted-foreground: 60 4% 64%;
+  --muted: 42 26% 93%;
+  --muted-foreground: 104 8% 26%;
 
-  --accent: 0 0% 15%;
-  --accent-foreground: 0 0% 88%;
+  --accent: 42 26% 93%;
+  --accent-foreground: 60 8% 10%;
 
-  --primary: 115 49% 69%;
-  --primary-foreground: 125 100% 7%;
-  --primary-container: 129 74% 18%;
-  --primary-container-foreground: 114 78% 80%;
+  --primary: 124 55% 24%;
+  --primary-foreground: 0 0% 100%;
+  --primary-container: 125 39% 94%;
+  --primary-container-foreground: 125 57% 18%;
 
-  --secondary: 27 100% 75%;
-  --secondary-foreground: 27 100% 9%;
-  --secondary-container: 31 100% 22%;
-  --secondary-container-foreground: 25 100% 88%;
+  --secondary: 32 95% 44%;
+  --secondary-foreground: 0 0% 100%;
+  --secondary-container: 48 96% 89%;
+  --secondary-container-foreground: 23 82% 31%;
 
-  --tertiary: 208 100% 79%;
-  --tertiary-foreground: 204 100% 10%;
-  --tertiary-container: 201 100% 23%;
-  --tertiary-container-foreground: 211 100% 90%;
+  --tertiary: 200 98% 39%;
+  --tertiary-foreground: 0 0% 100%;
+  --tertiary-container: 204 94% 94%;
+  --tertiary-container-foreground: 201 90% 27%;
 
-  --destructive: 6 100% 84%;
-  --destructive-foreground: 357 100% 21%;
-  --destructive-container: 356 100% 29%;
-  --destructive-container-foreground: 6 100% 92%;
+  --destructive: 0 75% 42%;
+  --destructive-foreground: 0 0% 100%;
+  --destructive-container: 6 100% 92%;
+  --destructive-container-foreground: 356 100% 29%;
 
   --warning: 43 100% 57%;
   --warning-foreground: 42 100% 13%;
 
-  --success: 144 61% 20%;
-  --success-foreground: 142 77% 73%;
+  --success: 141 84% 93%;
+  --success-foreground: 143 64% 24%;
 }
 
 /* -------------------------------------------------------------------------

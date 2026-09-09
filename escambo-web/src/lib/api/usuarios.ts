@@ -1,4 +1,5 @@
-import type { CadastroInput, CadastroResultado } from "@/types/usuario";
+import { CREDENCIAIS_MOCK } from "@/lib/mock/usuario-atual";
+import type { CadastroInput, CadastroResultado, LoginInput, LoginResultado } from "@/types/usuario";
 import { simulateLatency } from "./config";
 
 /**
@@ -39,6 +40,31 @@ export async function criarUsuario(input: CadastroInput): Promise<CadastroResult
       criadoEm: new Date().toISOString(),
       verificado: false,
       reputacao: { nota: 0, trocasConcluidas: 0 },
+      papel: "usuario",
+      status: "ativo",
     },
   };
+}
+
+/**
+ * Login (Etapa 4). Vira `POST /login` no backend, que devolveria um cookie
+ * httpOnly de sessão em vez de expor o usuário direto na resposta. Aqui o
+ * mock valida contra `CREDENCIAIS_MOCK` (ver `src/lib/mock/usuario-atual.ts`)
+ * — as duas contas de demonstração (usuário comum e admin).
+ */
+export async function loginUsuario(input: LoginInput): Promise<LoginResultado> {
+  await simulateLatency(500);
+
+  const email = input.email.trim().toLowerCase();
+  const credencial = CREDENCIAIS_MOCK.find((c) => c.email.toLowerCase() === email);
+
+  if (!credencial || credencial.senha !== input.senha) {
+    return { ok: false, erro: "E-mail ou senha incorretos." };
+  }
+
+  if (credencial.usuario.status === "suspenso") {
+    return { ok: false, erro: "Esta conta está suspensa. Entre em contato com o suporte." };
+  }
+
+  return { ok: true, usuario: credencial.usuario };
 }
