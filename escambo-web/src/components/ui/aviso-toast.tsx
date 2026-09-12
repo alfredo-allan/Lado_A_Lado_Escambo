@@ -1,41 +1,28 @@
-import { cn } from "@/lib/utils";
+import { CheckCircle2 } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface AvisoToastProps {
-  mensagem: string | null;
+  mensagem: string | null
   /**
-   * Sobrescreve a distância do fundo (via `tailwind-merge`, então qualquer
-   * classe `bottom-*`/`md:bottom-*` passada aqui substitui a padrão). Use em
-   * telas com um dock de ação fixo mais alto que a `BottomNav` global (ex.:
-   * Detalhe do Anúncio).
+   * Permite sobrescrever o posicionamento (ex: `top-16`, `top-20`, ou classes de bottom)
+   * via `tailwind-merge` quando uma tela específica precisar de offset customizado.
    */
-  className?: string;
+  className?: string
 }
 
-/**
- * Aviso flutuante (toast/snackbar) padrão do app. Antes cada tela tinha sua
- * própria cópia fixada no TOPO (`top-20`) — funcionava enquanto havia sempre
- * um `AppHeader` de 64px empurrando o conteúdo pra baixo, mas quebrou de
- * duas formas assim que o header passou a ficar oculto no mobile (ver
- * `app-header.tsx`): no Detalhe do Anúncio, o aviso passou a cair em cima do
- * selo de categoria no carrossel; no Perfil, em cima do avatar/cabeçalho.
- * Corrigido de vez trocando a posição para o RODAPÉ (padrão "snackbar"),
- * onde não há conteúdo variável de tela pra colidir — só precisa limpar a
- * `BottomNav`/dock de ação fixo, que é previsível.
- */
 export function AvisoToast({ mensagem, className }: AvisoToastProps) {
-  if (!mensagem) return null;
+  if (!mensagem) return null
 
   return (
     <div
       className={cn(
-        "pointer-events-none fixed inset-x-0 z-50 flex justify-center px-4",
-        "bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] md:bottom-6",
-        className,
-      )}
-    >
-      <div className="max-w-[92vw] rounded-full bg-inverse-surface px-4 py-2.5 text-center shadow-lg">
-        <span className="font-display text-sm font-bold text-inverse-on-surface">{mensagem}</span>
+        'pointer-events-none fixed inset-x-0 top-16 z-50 flex justify-center px-4 animate-in fade-in slide-in-from-top-2 duration-200',
+        className
+      )}>
+      <div className="flex items-center gap-2 max-w-[92vw] rounded-full bg-[#143e21] px-4 py-2 text-center shadow-lg border border-white/20 backdrop-blur-md">
+        <CheckCircle2 className="size-4 shrink-0 text-emerald-400" />
+        <span className="font-display text-xs font-bold text-white tracking-wide">{mensagem}</span>
       </div>
     </div>
-  );
+  )
 }

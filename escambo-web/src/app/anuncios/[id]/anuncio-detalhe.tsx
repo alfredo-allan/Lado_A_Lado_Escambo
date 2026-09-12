@@ -1,8 +1,8 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useState } from 'react'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import {
   ArrowLeft,
   ArrowLeftRight,
@@ -28,84 +28,84 @@ import {
   Star,
   Syringe,
   X,
-  type LucideIcon,
-} from "lucide-react";
+  type LucideIcon
+} from 'lucide-react'
 
-import { AvisoToast } from "@/components/ui/aviso-toast";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
-import { useUsuarioAtual } from "@/lib/auth";
-import type { Anuncio } from "@/types/anuncio";
+import { AvisoToast } from '@/components/ui/aviso-toast'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
+import { cn } from '@/lib/utils'
+import { useUsuarioAtual } from '@/lib/auth'
+import type { Anuncio } from '@/types/anuncio'
 
 const STATUS_VARIANT = {
-  disponivel: "success",
-  em_negociacao: "tertiary",
-  trocado: "neutral",
-} as const;
+  disponivel: 'success',
+  em_negociacao: 'tertiary',
+  trocado: 'neutral'
+} as const
 
-const STATUS_LABEL: Record<Anuncio["status"], string> = {
-  disponivel: "Disponível para Escambo",
-  em_negociacao: "Em Negociação",
-  trocado: "Troca Concluída",
-};
+const STATUS_LABEL: Record<Anuncio['status'], string> = {
+  disponivel: 'Disponível para Escambo',
+  em_negociacao: 'Em Negociação',
+  trocado: 'Troca Concluída'
+}
 
-const BALANCA_LABEL: Record<Anuncio["balanca"], string> = {
-  equivalente: "Equivalente / Volta Negociável",
-  flexivel: "Flexível — aceita variações",
-  aceita_volta: "Aceita volta em dinheiro",
-};
+const BALANCA_LABEL: Record<Anuncio['balanca'], string> = {
+  equivalente: 'Equivalente / Volta Negociável',
+  flexivel: 'Flexível — aceita variações',
+  aceita_volta: 'Aceita volta em dinheiro'
+}
 
-const BALANCA_SEGMENTOS: Record<Anuncio["balanca"], number> = {
+const BALANCA_SEGMENTOS: Record<Anuncio['balanca'], number> = {
   equivalente: 65,
   flexivel: 50,
-  aceita_volta: 30,
-};
+  aceita_volta: 30
+}
 
-const FICHA_CONFIG: { chave: keyof NonNullable<Anuncio["fichaAnimal"]>; label: string; icon: LucideIcon }[] = [
-  { chave: "idade", label: "Idade", icon: Hourglass },
-  { chave: "temperamento", label: "Temperamento", icon: Smile },
-  { chave: "raca", label: "Raça", icon: PawPrint },
-  { chave: "documento", label: "Documento", icon: Syringe },
-];
+const FICHA_CONFIG: { chave: keyof NonNullable<Anuncio['fichaAnimal']>; label: string; icon: LucideIcon }[] = [
+  { chave: 'idade', label: 'Idade', icon: Hourglass },
+  { chave: 'temperamento', label: 'Temperamento', icon: Smile },
+  { chave: 'raca', label: 'Raça', icon: PawPrint },
+  { chave: 'documento', label: 'Documento', icon: Syringe }
+]
 
 export function AnuncioDetalhe({ anuncio }: { anuncio: Anuncio }) {
-  const router = useRouter();
-  const { usuario } = useUsuarioAtual();
+  const router = useRouter()
+  const { usuario } = useUsuarioAtual()
 
-  const [fotoAtual, setFotoAtual] = useState(0);
-  const [favorito, setFavorito] = useState(false);
-  const [sheetAberto, setSheetAberto] = useState(false);
-  const [aviso, setAviso] = useState<string | null>(null);
+  const [fotoAtual, setFotoAtual] = useState(0)
+  const [favorito, setFavorito] = useState(false)
+  const [sheetAberto, setSheetAberto] = useState(false)
+  const [aviso, setAviso] = useState<string | null>(null)
 
-  const temVariasFotos = anuncio.imagens.length > 1;
-  const fichaAnimal = anuncio.fichaAnimal;
+  const temVariasFotos = anuncio.imagens.length > 1
+  const fichaAnimal = anuncio.fichaAnimal
 
   function mostrarAviso(mensagem: string) {
-    setAviso(mensagem);
-    setTimeout(() => setAviso(null), 2600);
+    setAviso(mensagem)
+    setTimeout(() => setAviso(null), 2600)
   }
 
   function proximaFoto() {
-    setFotoAtual((atual) => (atual + 1) % anuncio.imagens.length);
+    setFotoAtual((atual) => (atual + 1) % anuncio.imagens.length)
   }
   function fotoAnterior() {
-    setFotoAtual((atual) => (atual - 1 + anuncio.imagens.length) % anuncio.imagens.length);
+    setFotoAtual((atual) => (atual - 1 + anuncio.imagens.length) % anuncio.imagens.length)
   }
 
   function alternarFavorito() {
-    setFavorito((atual) => !atual);
-    mostrarAviso(favorito ? "Removido dos favoritos" : "Salvo nos seus favoritos!");
+    setFavorito((atual) => !atual)
+    mostrarAviso(favorito ? 'Removido dos favoritos' : 'Salvo nos seus favoritos!')
   }
 
   function compartilhar() {
-    if (typeof navigator !== "undefined" && navigator.share) {
+    if (typeof navigator !== 'undefined' && navigator.share) {
       navigator
         .share({ title: anuncio.titulo, text: `Confira este escambo no Escambo: ${anuncio.titulo}`, url: window.location.href })
-        .catch(() => {});
+        .catch(() => {})
     } else {
-      mostrarAviso("Link do anúncio copiado!");
+      mostrarAviso('Link do anúncio copiado!')
     }
   }
 
@@ -118,11 +118,11 @@ export function AnuncioDetalhe({ anuncio }: { anuncio: Anuncio }) {
    */
   function exigirCadastro(acao: () => void) {
     if (!usuario) {
-      mostrarAviso("Faça login para continuar essa ação.");
-      router.push(`/login?next=/anuncios/${anuncio.id}`);
-      return;
+      mostrarAviso('Faça login para continuar essa ação.')
+      router.push(`/login?next=/anuncios/${anuncio.id}`)
+      return
     }
-    acao();
+    acao()
   }
 
   return (
@@ -131,8 +131,7 @@ export function AnuncioDetalhe({ anuncio }: { anuncio: Anuncio }) {
         <Link
           href="/"
           aria-label="Voltar"
-          className="flex size-11 items-center justify-center rounded-full bg-muted text-foreground transition-transform active:scale-95"
-        >
+          className="flex size-11 items-center justify-center rounded-full bg-muted text-foreground transition-transform active:scale-95">
           <ArrowLeft className="size-5" />
         </Link>
         <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-container/20 px-3 py-1.5">
@@ -140,27 +139,23 @@ export function AnuncioDetalhe({ anuncio }: { anuncio: Anuncio }) {
           <span className="font-display text-xs font-bold uppercase tracking-wide text-primary">Anúncio Verificado</span>
         </span>
       </div>
-
       <div className="page-container flex items-center justify-end gap-2 pb-2">
         <button
           type="button"
           aria-label="Favoritar anúncio"
           aria-pressed={favorito}
           onClick={alternarFavorito}
-          className="flex size-11 items-center justify-center rounded-full bg-muted text-foreground shadow-card transition-transform active:scale-90"
-        >
-          <Heart className={cn("size-5", favorito && "fill-destructive text-destructive")} />
+          className="flex size-11 items-center justify-center rounded-full bg-muted text-foreground shadow-card transition-transform active:scale-90">
+          <Heart className={cn('size-5', favorito && 'fill-destructive text-destructive')} />
         </button>
         <button
           type="button"
           aria-label="Compartilhar anúncio"
           onClick={compartilhar}
-          className="flex size-11 items-center justify-center rounded-full bg-muted text-foreground shadow-card transition-transform active:scale-90"
-        >
+          className="flex size-11 items-center justify-center rounded-full bg-muted text-foreground shadow-card transition-transform active:scale-90">
           <Share2 className="size-5" />
         </button>
       </div>
-
       {/* Carrossel de imagens */}
       <div className="page-container">
         <div className="relative h-72 w-full overflow-hidden rounded-xl bg-muted shadow-card">
@@ -187,23 +182,20 @@ export function AnuncioDetalhe({ anuncio }: { anuncio: Anuncio }) {
                 type="button"
                 onClick={fotoAnterior}
                 aria-label="Foto anterior"
-                className="absolute left-2 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-transform active:scale-90"
-              >
+                className="absolute left-2 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-transform active:scale-90">
                 <ChevronLeft className="size-5" />
               </button>
               <button
                 type="button"
                 onClick={proximaFoto}
                 aria-label="Próxima foto"
-                className="absolute right-2 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-transform active:scale-90"
-              >
+                className="absolute right-2 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-transform active:scale-90">
                 <ChevronRight className="size-5" />
               </button>
             </>
           )}
         </div>
       </div>
-
       <div className="page-container mt-4 flex flex-col gap-4">
         {/* Título e identificadores */}
         <div className="flex flex-col gap-2">
@@ -232,9 +224,7 @@ export function AnuncioDetalhe({ anuncio }: { anuncio: Anuncio }) {
             </div>
             <div className="flex min-w-0 flex-1 flex-col">
               <div className="flex items-center gap-1.5">
-                <span className="font-display text-xs font-bold uppercase tracking-wider text-secondary">
-                  Proposta de Escambo
-                </span>
+                <span className="font-display text-xs font-bold uppercase tracking-wider text-secondary">Proposta de Escambo</span>
                 <span className="size-1.5 rounded-full bg-secondary" />
               </div>
               <p className="mt-0.5 font-display text-sm font-bold text-foreground">O que o vendedor aceita em troca:</p>
@@ -243,16 +233,16 @@ export function AnuncioDetalhe({ anuncio }: { anuncio: Anuncio }) {
 
           <div className="mt-3 flex flex-col gap-2">
             {anuncio.opcoesTroca.map((opcao, index) => {
-              const Icon = index === 0 ? CheckCircle2 : ArrowLeftRight;
+              const Icon = index === 0 ? CheckCircle2 : ArrowLeftRight
               return (
                 <div key={opcao.titulo} className="flex items-start gap-3 rounded-lg bg-card p-3 shadow-card">
-                  <Icon className={cn("mt-0.5 size-5", index === 0 ? "text-primary" : "text-secondary")} />
+                  <Icon className={cn('mt-0.5 size-5', index === 0 ? 'text-primary' : 'text-secondary')} />
                   <div className="min-w-0 flex-1">
                     <p className="font-display text-sm font-bold text-foreground">{opcao.titulo}</p>
                     <p className="mt-0.5 text-xs text-muted-foreground">{opcao.descricao}</p>
                   </div>
                 </div>
-              );
+              )
             })}
           </div>
 
@@ -266,10 +256,7 @@ export function AnuncioDetalhe({ anuncio }: { anuncio: Anuncio }) {
             </div>
             <div className="flex h-2 w-full overflow-hidden rounded-full bg-muted">
               <div className="h-full bg-primary-container" style={{ width: `${BALANCA_SEGMENTOS[anuncio.balanca]}%` }} />
-              <div
-                className="h-full bg-secondary-container"
-                style={{ width: `${100 - BALANCA_SEGMENTOS[anuncio.balanca]}%` }}
-              />
+              <div className="h-full bg-secondary-container" style={{ width: `${100 - BALANCA_SEGMENTOS[anuncio.balanca]}%` }} />
             </div>
           </div>
         </div>
@@ -277,9 +264,7 @@ export function AnuncioDetalhe({ anuncio }: { anuncio: Anuncio }) {
         {/* Card do vendedor */}
         <div className="flex flex-col gap-3 rounded-xl bg-card p-4 shadow-card">
           <div className="flex items-center justify-between">
-            <span className="font-display text-xs font-bold uppercase tracking-wider text-muted-foreground">
-              Vendedor Responsável
-            </span>
+            <span className="font-display text-xs font-bold uppercase tracking-wider text-muted-foreground">Vendedor Responsável</span>
             {anuncio.vendedor.verificado && (
               <span className="inline-flex items-center gap-1 rounded-full bg-primary-container/25 px-2.5 py-1 font-display text-[11px] font-bold text-primary">
                 <ShieldCheck className="size-3.5" />
@@ -315,9 +300,7 @@ export function AnuncioDetalhe({ anuncio }: { anuncio: Anuncio }) {
                   {anuncio.vendedor.nota.toFixed(1)}
                 </span>
                 <span className="text-xs text-muted-foreground">•</span>
-                <span className="text-xs font-medium text-muted-foreground">
-                  {anuncio.vendedor.trocasConcluidas} trocas concluídas
-                </span>
+                <span className="text-xs font-medium text-muted-foreground">{anuncio.vendedor.trocasConcluidas} trocas concluídas</span>
               </div>
             </div>
           </div>
@@ -386,24 +369,19 @@ export function AnuncioDetalhe({ anuncio }: { anuncio: Anuncio }) {
             <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-warning text-warning-foreground shadow-sm">
               <ShieldAlert className="size-5" />
             </div>
-            <h3 className="font-display text-sm font-bold leading-snug text-foreground">
-              Dicas de segurança para trocas presenciais
-            </h3>
+            <h3 className="font-display text-sm font-bold leading-snug text-foreground">Dicas de segurança para trocas presenciais</h3>
           </div>
           <p className="text-sm leading-relaxed text-foreground/90">
-            Faça a avaliação do item sempre em local público movimentado (shopping, mercado, praça) ou na
-            presença de terceiros de confiança.{" "}
-            <strong className="font-semibold text-foreground">Nunca transfira quantias antecipadas</strong> sem
-            inspecionar o que está recebendo e, no caso de animais, conferir a Guia de Trânsito Animal (GTA).
+            Faça a avaliação do item sempre em local público movimentado (shopping, mercado, praça) ou na presença de terceiros de
+            confiança. <strong className="font-semibold text-foreground">Nunca transfira quantias antecipadas</strong> sem inspecionar o que
+            está recebendo e, no caso de animais, conferir a Guia de Trânsito Animal (GTA).
           </p>
         </div>
       </div>
-
       {/* Dock fixo de ações — substitui a BottomNav global nesta rota */}
       <div
         className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-4 pt-3 shadow-sheet backdrop-blur"
-        style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
-      >
+        style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}>
         <div className="mx-auto flex max-w-md flex-col gap-2">
           <Button size="lg" className="w-full" onClick={() => exigirCadastro(() => setSheetAberto(true))}>
             <Handshake className="size-5" />
@@ -413,28 +391,28 @@ export function AnuncioDetalhe({ anuncio }: { anuncio: Anuncio }) {
             <Button
               variant="outline"
               className="h-12 flex-1"
-              onClick={() => exigirCadastro(() => router.push(`/anuncios/${anuncio.id}/conversa`))}
-            >
+              onClick={() => exigirCadastro(() => router.push(`/anuncios/${anuncio.id}/conversa`))}>
               <MessageCircle className="size-5 text-primary" />
-              Conversar com {anuncio.vendedor.nome.split(" ")[0]}
+              Conversar com {anuncio.vendedor.nome.split(' ')[0]}
             </Button>
             <Button
               variant="outline"
               size="icon"
               className="h-12 w-12"
               aria-label="Condições da troca"
-              onClick={() => mostrarAviso(`Condições: ${BALANCA_LABEL[anuncio.balanca]}`)}
-            >
+              onClick={() => mostrarAviso(`Condições: ${BALANCA_LABEL[anuncio.balanca]}`)}>
               <Info className="size-5" />
             </Button>
           </div>
         </div>
       </div>
-
       {sheetAberto && (
-        <PropostaSheet anuncio={anuncio} onFechar={() => setSheetAberto(false)} onEnviar={() => mostrarAviso(`Proposta enviada para ${anuncio.vendedor.nome}!`)} />
+        <PropostaSheet
+          anuncio={anuncio}
+          onFechar={() => setSheetAberto(false)}
+          onEnviar={() => mostrarAviso(`Proposta enviada para ${anuncio.vendedor.nome}!`)}
+        />
       )}
-
       {/* `AvisoToast` no rodapé, não no topo: um `top-*` fixo aqui já colidiu
           duas vezes com conteúdo desta tela (primeiro com o selo "Anúncio
           Verificado", depois com o selo de categoria no carrossel, assim que
@@ -442,12 +420,9 @@ export function AnuncioDetalhe({ anuncio }: { anuncio: Anuncio }) {
           e o comentário em `aviso-toast.tsx`). O offset extra aqui (~9.5rem)
           é por causa do dock de ações fixo desta tela, mais alto que a
           `BottomNav` global que o padrão do componente já limpa. */}
-      <AvisoToast
-        mensagem={aviso}
-        className="bottom-[calc(env(safe-area-inset-bottom)+9.5rem)] md:bottom-[calc(env(safe-area-inset-bottom)+9.5rem)]"
-      />
+      <AvisoToast mensagem={aviso} className="top-16 md:top-20" />{' '}
     </div>
-  );
+  )
 }
 
 /**
@@ -455,21 +430,13 @@ export function AnuncioDetalhe({ anuncio }: { anuncio: Anuncio }) {
  * Enviar propostas de verdade e o chat pertencem à Etapa 4; quando essa
  * etapa existir, `onEnviar` chama a API real em vez de só disparar o aviso.
  */
-function PropostaSheet({
-  anuncio,
-  onFechar,
-  onEnviar,
-}: {
-  anuncio: Anuncio;
-  onFechar: () => void;
-  onEnviar: () => void;
-}) {
-  const [tipoOferta, setTipoOferta] = useState<"item" | "item_dinheiro">("item");
-  const [mensagem, setMensagem] = useState("");
+function PropostaSheet({ anuncio, onFechar, onEnviar }: { anuncio: Anuncio; onFechar: () => void; onEnviar: () => void }) {
+  const [tipoOferta, setTipoOferta] = useState<'item' | 'item_dinheiro'>('item')
+  const [mensagem, setMensagem] = useState('')
 
   function enviar() {
-    onEnviar();
-    onFechar();
+    onEnviar()
+    onFechar()
   }
 
   return (
@@ -485,15 +452,14 @@ function PropostaSheet({
             type="button"
             onClick={onFechar}
             aria-label="Fechar"
-            className="flex size-10 items-center justify-center rounded-full bg-muted text-foreground"
-          >
+            className="flex size-10 items-center justify-center rounded-full bg-muted text-foreground">
             <X className="size-5" />
           </button>
         </div>
 
         <p className="text-sm text-muted-foreground">
-          Escolha o que você vai oferecer para <strong className="text-foreground">{anuncio.vendedor.nome}</strong> em
-          troca de &ldquo;{anuncio.titulo}&rdquo;:
+          Escolha o que você vai oferecer para <strong className="text-foreground">{anuncio.vendedor.nome}</strong> em troca de &ldquo;
+          {anuncio.titulo}&rdquo;:
         </p>
 
         <div className="flex flex-col gap-2">
@@ -508,8 +474,8 @@ function PropostaSheet({
             <input
               type="radio"
               name="tipo-oferta"
-              checked={tipoOferta === "item"}
-              onChange={() => setTipoOferta("item")}
+              checked={tipoOferta === 'item'}
+              onChange={() => setTipoOferta('item')}
               className="size-5 accent-primary"
             />
           </label>
@@ -524,8 +490,8 @@ function PropostaSheet({
             <input
               type="radio"
               name="tipo-oferta"
-              checked={tipoOferta === "item_dinheiro"}
-              onChange={() => setTipoOferta("item_dinheiro")}
+              checked={tipoOferta === 'item_dinheiro'}
+              onChange={() => setTipoOferta('item_dinheiro')}
               className="size-5 accent-primary"
             />
           </label>
@@ -550,5 +516,5 @@ function PropostaSheet({
         </Button>
       </div>
     </div>
-  );
+  )
 }
