@@ -1,19 +1,20 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { BarChart3, Flag, Loader2, LogOut, Megaphone, ShieldAlert, Users } from "lucide-react";
+import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
+import { BarChart3, Flag, LogOut, Megaphone, ShieldAlert, Users } from 'lucide-react'
 
-import { useAuth } from "@/lib/auth-context";
-import { PaginaEmBranco } from "@/components/layout/pagina-em-branco";
-import { cn } from "@/lib/utils";
+import { useAuth } from '@/lib/auth-context'
+import { PaginaEmBranco } from '@/components/layout/pagina-em-branco'
+import { Skeleton } from '@/components/ui/skeleton'
+import { cn } from '@/lib/utils'
 
 const ABAS = [
-  { href: "/admin", label: "Dashboard", icon: BarChart3 },
-  { href: "/admin/anuncios", label: "Anúncios", icon: Megaphone },
-  { href: "/admin/usuarios", label: "Usuários", icon: Users },
-  { href: "/admin/denuncias", label: "Denúncias", icon: Flag },
-];
+  { href: '/admin', label: 'Dashboard', icon: BarChart3 },
+  { href: '/admin/anuncios', label: 'Anúncios', icon: Megaphone },
+  { href: '/admin/usuarios', label: 'Usuários', icon: Users },
+  { href: '/admin/denuncias', label: 'Denúncias', icon: Flag }
+]
 
 /**
  * Layout do Painel Admin (Etapa 4). Gate de acesso: só renderiza o conteúdo
@@ -29,19 +30,25 @@ const ABAS = [
  * `deveOcultar` em `app-header.tsx`/`bottom-nav.tsx`).
  */
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-  const router = useRouter();
-  const { usuario, papel, carregando, logout } = useAuth();
+  const pathname = usePathname()
+  const router = useRouter()
+  const { usuario, papel, carregando, logout } = useAuth()
 
   if (carregando) {
+    // Ainda não dá pra saber se vai renderizar o painel Admin ou a tela de
+    // "Acesso restrito" (depende da sessão, que só reidrata depois deste
+    // instante) — um esqueleto genérico de painel centralizado cobre bem
+    // os dois casos, sem "adivinhar" conteúdo que ainda não existe.
     return (
-      <div className="flex min-h-dvh items-center justify-center">
-        <Loader2 className="size-6 animate-spin text-muted-foreground" />
+      <div className="flex min-h-dvh flex-col items-center justify-center gap-4 p-6">
+        <Skeleton className="size-16 rounded-full" />
+        <Skeleton className="h-4 w-48" />
+        <Skeleton className="h-4 w-32" />
       </div>
-    );
+    )
   }
 
-  if (papel !== "admin") {
+  if (papel !== 'admin') {
     return (
       <PaginaEmBranco>
         <div className="mx-auto flex w-full max-w-md flex-col items-center text-center">
@@ -51,33 +58,31 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <h1 className="mb-2 font-display text-xl font-bold text-foreground">Acesso restrito</h1>
           <p className="mb-6 text-muted-foreground">
             {usuario
-              ? "Sua conta não tem permissão de Administrador."
-              : "Esta área é só para a equipe do Escambo. Entre com uma conta de Administrador para continuar."}
+              ? 'Sua conta não tem permissão de Administrador.'
+              : 'Esta área é só para a equipe do Escambo. Entre com uma conta de Administrador para continuar.'}
           </p>
           <div className="flex w-full flex-col gap-2">
             {!usuario && (
               <Link
                 href="/login?next=/admin"
-                className="flex h-14 w-full items-center justify-center rounded-lg bg-primary font-display text-sm font-bold text-primary-foreground shadow-card transition-colors hover:bg-primary/90"
-              >
+                className="flex h-14 w-full items-center justify-center rounded-lg bg-primary font-display text-sm font-bold text-primary-foreground shadow-card transition-colors hover:bg-primary/90">
                 Entrar como Administrador
               </Link>
             )}
             <Link
               href="/"
-              className="flex h-14 w-full items-center justify-center rounded-lg border-[1.5px] border-border font-display text-sm font-bold text-foreground transition-colors hover:bg-accent"
-            >
+              className="flex h-14 w-full items-center justify-center rounded-lg border-[1.5px] border-border font-display text-sm font-bold text-foreground transition-colors hover:bg-accent">
               Voltar ao Início
             </Link>
           </div>
         </div>
       </PaginaEmBranco>
-    );
+    )
   }
 
   function sair() {
-    logout();
-    router.push("/");
+    logout()
+    router.push('/')
   }
 
   return (
@@ -97,8 +102,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               type="button"
               onClick={sair}
               aria-label="Sair"
-              className="flex size-10 items-center justify-center rounded-full bg-muted text-foreground transition-transform active:scale-90"
-            >
+              className="flex size-10 items-center justify-center rounded-full bg-muted text-foreground transition-transform active:scale-90">
               <LogOut className="size-4" />
             </button>
           </div>
@@ -106,26 +110,25 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         <nav className="page-container flex gap-1 overflow-x-auto pb-2" aria-label="Navegação do Admin">
           {ABAS.map((aba) => {
-            const ativo = aba.href === "/admin" ? pathname === "/admin" : pathname.startsWith(aba.href);
-            const Icon = aba.icon;
+            const ativo = aba.href === '/admin' ? pathname === '/admin' : pathname.startsWith(aba.href)
+            const Icon = aba.icon
             return (
               <Link
                 key={aba.href}
                 href={aba.href}
                 className={cn(
-                  "flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 font-display text-xs font-bold transition-colors",
-                  ativo ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-accent",
-                )}
-              >
+                  'flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 font-display text-xs font-bold transition-colors',
+                  ativo ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:bg-accent'
+                )}>
                 <Icon className="size-3.5" />
                 {aba.label}
               </Link>
-            );
+            )
           })}
         </nav>
       </header>
 
       <main className="page-container py-5 pb-14">{children}</main>
     </div>
-  );
+  )
 }

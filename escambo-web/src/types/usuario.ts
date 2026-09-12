@@ -110,3 +110,42 @@ export interface LoginInput {
 export type LoginResultado =
   | { ok: true; usuario: Usuario }
   | { ok: false; erro: string };
+
+/**
+ * Fluxo "Esqueci minha senha" (`/esqueci-senha`), em 3 etapas que viram 3
+ * chamadas — e no backend real, 3 endpoints (ver `src/lib/api/
+ * recuperacao-senha.ts` para o detalhe de cada um e `src/lib/
+ * senha-recuperacao.ts` para onde o mock guarda o código/token enquanto não
+ * existe backend de verdade).
+ */
+export interface SolicitarRecuperacaoInput {
+  email: string;
+}
+
+export type SolicitarRecuperacaoResultado =
+  | {
+      ok: true;
+      /**
+       * Só existe nesta fase mock, porque não há servidor de e-mail — o
+       * código "chega" direto na resposta em vez de por e-mail de verdade.
+       * Uma API real NUNCA devolveria isto na resposta HTTP.
+       */
+      codigoDemo?: string;
+    }
+  | { ok: false; erro: string };
+
+export interface VerificarCodigoInput {
+  email: string;
+  codigo: string;
+}
+
+export type VerificarCodigoResultado =
+  | { ok: true; tokenRedefinicao: string }
+  | { ok: false; erro: string };
+
+export interface RedefinirSenhaInput {
+  tokenRedefinicao: string;
+  novaSenha: string;
+}
+
+export type RedefinirSenhaResultado = { ok: true } | { ok: false; erro: string };

@@ -46,8 +46,10 @@ export function AppHeader() {
 
         <div className="flex items-center gap-1">
           <ThemeToggle />
-          <Button variant="ghost" size="icon" aria-label="Notificações">
-            <Bell className="size-5" />
+          <Button asChild variant="ghost" size="icon" aria-label="Notificações">
+            <Link href="/notificacoes">
+              <Bell className="size-5" />
+            </Link>
           </Button>
 
           {usuario ? (

@@ -250,4 +250,22 @@
   [role='button'] {
     -webkit-tap-highlight-color: transparent;
   }
+
+  /* Autofill do navegador (login/e-mail/senha lembrados) ignora a cor de
+     fundo normal do input e pinta por cima com o amarelo padrão do Chrome/
+     Chromium — texto quase ilegível sobre o fundo creme do app (reportado
+     pelo usuário no Login, testando com credenciais já salvas no navegador).
+     `-webkit-box-shadow` com `inset` "engana" o autofill fazendo-o pintar a
+     cor do nosso `--card` em vez do amarelo; o delay gigante na transição
+     evita o pisca amarelo no instante em que o autofill aplica o estilo. */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-text-fill-color: hsl(var(--foreground));
+    -webkit-box-shadow: 0 0 0px 1000px hsl(var(--card)) inset;
+    box-shadow: 0 0 0px 1000px hsl(var(--card)) inset;
+    transition: background-color 5000s ease-in-out 0s;
+    caret-color: hsl(var(--foreground));
+  }
 }

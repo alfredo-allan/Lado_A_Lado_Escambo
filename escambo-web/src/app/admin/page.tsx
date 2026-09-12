@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Flag, Loader2, Megaphone, ShieldCheck, UserX, Users } from "lucide-react";
+import { ArrowRight, Flag, Megaphone, ShieldCheck, UserX, Users } from "lucide-react";
 
 import { getMetricasAdmin, type MetricasAdmin } from "@/lib/api/admin";
+import { AdminDashboardSkeleton } from "@/components/skeletons/admin-skeletons";
 
 /**
  * Dashboard do Admin (Etapa 4). Números vêm de `getMetricasAdmin()` — um
@@ -21,11 +22,7 @@ export default function AdminDashboardPage() {
   }, []);
 
   if (!metricas) {
-    return (
-      <div className="flex min-h-[40vh] items-center justify-center">
-        <Loader2 className="size-6 animate-spin text-muted-foreground" />
-      </div>
-    );
+    return <AdminDashboardSkeleton />;
   }
 
   return (

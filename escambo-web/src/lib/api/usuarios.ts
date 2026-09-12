@@ -1,4 +1,5 @@
 import { CREDENCIAIS_MOCK } from "@/lib/mock/usuario-atual";
+import { lerOverrideSenha } from "@/lib/senha-recuperacao";
 import type { CadastroInput, CadastroResultado, LoginInput, LoginResultado } from "@/types/usuario";
 import { simulateLatency } from "./config";
 
@@ -58,7 +59,13 @@ export async function loginUsuario(input: LoginInput): Promise<LoginResultado> {
   const email = input.email.trim().toLowerCase();
   const credencial = CREDENCIAIS_MOCK.find((c) => c.email.toLowerCase() === email);
 
-  if (!credencial || credencial.senha !== input.senha) {
+  // Uma senha redefinida via "Esqueci minha senha" (ver
+  // `src/lib/senha-recuperacao.ts`) sobrepõe a senha mock fixa — sem isso, o
+  // fluxo de recuperação terminaria num beco sem saída (a pessoa nunca
+  // conseguiria entrar de novo com a senha nova que acabou de criar).
+  const senhaEsperada = credencial ? (lerOverrideSenha(credencial.email) ?? credencial.senha) : null;
+
+  if (!credencial || senhaEsperada !== input.senha) {
     return { ok: false, erro: "E-mail ou senha incorretos." };
   }
 

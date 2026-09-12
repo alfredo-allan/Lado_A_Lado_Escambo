@@ -8,7 +8,6 @@ import {
   CalendarDays,
   ChevronRight,
   Handshake,
-  Loader2,
   LogIn,
   LogOut,
   MapPin,
@@ -20,8 +19,10 @@ import {
   UserRound,
 } from "lucide-react";
 
+import { AvisoToast } from "@/components/ui/aviso-toast";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { PerfilSkeleton } from "@/components/skeletons/perfil-skeleton";
 import { useAuth } from "@/lib/auth-context";
 import { MEUS_ANUNCIOS_IDS, USUARIO_ATUAL_MOCK } from "@/lib/mock/usuario-atual";
 import { MOCK_ANUNCIOS } from "@/lib/mock/anuncios";
@@ -93,11 +94,7 @@ export default function PerfilPage() {
   }
 
   if (carregando) {
-    return (
-      <div className="page-container flex min-h-[60vh] items-center justify-center">
-        <Loader2 className="size-6 animate-spin text-muted-foreground" />
-      </div>
-    );
+    return <PerfilSkeleton />;
   }
 
   if (!usuario) {
@@ -257,11 +254,7 @@ export default function PerfilPage() {
         )}
       </div>
 
-      {aviso && (
-        <div className="fixed left-1/2 top-20 z-50 -translate-x-1/2 rounded-full bg-inverse-surface px-4 py-2.5 text-inverse-on-surface shadow-lg">
-          <span className="font-display text-sm font-bold">{aviso}</span>
-        </div>
-      )}
+      <AvisoToast mensagem={aviso} />
     </div>
   );
 }

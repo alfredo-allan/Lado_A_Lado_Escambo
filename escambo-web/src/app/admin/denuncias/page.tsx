@@ -2,10 +2,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { CheckCircle2, Loader2, MessageCircle, Megaphone, RotateCcw, XCircle } from "lucide-react";
+import { CheckCircle2, MessageCircle, Megaphone, RotateCcw, XCircle } from "lucide-react";
 
+import { AvisoToast } from "@/components/ui/aviso-toast";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { AdminListSkeleton } from "@/components/skeletons/admin-skeletons";
 import { getAnunciosAdmin, getDenuncias } from "@/lib/api/admin";
 import type { Anuncio } from "@/types/anuncio";
 import type { Denuncia, StatusDenuncia } from "@/types/denuncia";
@@ -67,11 +69,7 @@ export default function AdminDenunciasPage() {
   }
 
   if (!denuncias) {
-    return (
-      <div className="flex min-h-[40vh] items-center justify-center">
-        <Loader2 className="size-6 animate-spin text-muted-foreground" />
-      </div>
-    );
+    return <AdminListSkeleton linhas={3} />;
   }
 
   const listaFiltrada = filtro === "todas" ? denuncias : denuncias.filter((d) => d.status === filtro);
@@ -169,11 +167,7 @@ export default function AdminDenunciasPage() {
         </div>
       )}
 
-      {aviso && (
-        <div className="fixed left-1/2 top-20 z-50 -translate-x-1/2 rounded-full bg-inverse-surface px-4 py-2.5 text-inverse-on-surface shadow-lg">
-          <span className="font-display text-sm font-bold">{aviso}</span>
-        </div>
-      )}
+      <AvisoToast mensagem={aviso} />
     </div>
   );
 }

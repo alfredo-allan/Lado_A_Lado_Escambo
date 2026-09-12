@@ -36,6 +36,9 @@ function deveOcultar(pathname: string) {
   return (
     OCULTAR_EM.includes(pathname) ||
     pathname.startsWith("/anuncios/") ||
+    // Fluxo de "Esqueci minha senha" (3 etapas) — mesma tela cheia sem
+    // navegação global do Login/Cadastro, ver `src/app/esqueci-senha/*`.
+    pathname.startsWith("/esqueci-senha") ||
     // O Admin tem sua própria navegação (ver `src/app/admin/layout.tsx`) —
     // a barra de navegação do consumidor não faz sentido lá.
     pathname.startsWith("/admin")

@@ -31,6 +31,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import { AvisoToast } from "@/components/ui/aviso-toast";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -434,18 +435,17 @@ export function AnuncioDetalhe({ anuncio }: { anuncio: Anuncio }) {
         <PropostaSheet anuncio={anuncio} onFechar={() => setSheetAberto(false)} onEnviar={() => mostrarAviso(`Proposta enviada para ${anuncio.vendedor.nome}!`)} />
       )}
 
-      {aviso && (
-        // `top-32 md:top-48`, não `top-20`: esta tela tem duas barras locais
-        // (voltar/"Anúncio Verificado" + favoritar/compartilhar) empilhadas
-        // antes do carrossel — um `top-20` fixo caía bem em cima do texto do
-        // selo "Anúncio Verificado", sobrepondo as letras (bug reportado
-        // pelo usuário). Os dois valores foram calculados para ficar sempre
-        // logo abaixo dessas duas barras: sem `AppHeader` no mobile (< md,
-        // ver `app-header.tsx`) e com ele em telas >= md.
-        <div className="fixed left-1/2 top-32 z-50 -translate-x-1/2 rounded-full bg-inverse-surface px-4 py-2.5 text-inverse-on-surface shadow-lg md:top-48">
-          <span className="font-display text-sm font-bold">{aviso}</span>
-        </div>
-      )}
+      {/* `AvisoToast` no rodapé, não no topo: um `top-*` fixo aqui já colidiu
+          duas vezes com conteúdo desta tela (primeiro com o selo "Anúncio
+          Verificado", depois com o selo de categoria no carrossel, assim que
+          o `AppHeader` passou a ficar oculto no mobile — ver `app-header.tsx`
+          e o comentário em `aviso-toast.tsx`). O offset extra aqui (~9.5rem)
+          é por causa do dock de ações fixo desta tela, mais alto que a
+          `BottomNav` global que o padrão do componente já limpa. */}
+      <AvisoToast
+        mensagem={aviso}
+        className="bottom-[calc(env(safe-area-inset-bottom)+9.5rem)] md:bottom-[calc(env(safe-area-inset-bottom)+9.5rem)]"
+      />
     </div>
   );
 }

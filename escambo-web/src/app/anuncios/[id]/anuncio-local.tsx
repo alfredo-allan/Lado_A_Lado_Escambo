@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { notFound } from "next/navigation";
-import { Loader2 } from "lucide-react";
 
+import { AnuncioDetalheSkeleton } from "@/components/skeletons/anuncio-detalhe-skeleton";
 import { buscarAnuncioPersistidoPorId } from "@/lib/anuncios-usuario";
 import type { Anuncio } from "@/types/anuncio";
 import { AnuncioDetalhe } from "./anuncio-detalhe";
@@ -34,11 +34,7 @@ export function AnuncioLocalOuNaoEncontrado({ id }: { id: string }) {
   }, [id]);
 
   if (estado === "carregando") {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <Loader2 className="size-6 animate-spin text-muted-foreground" />
-      </div>
-    );
+    return <AnuncioDetalheSkeleton />;
   }
 
   if (estado === "naoEncontrado") {

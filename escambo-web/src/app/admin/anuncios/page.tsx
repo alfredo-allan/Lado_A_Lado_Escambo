@@ -2,8 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Flag, Loader2, RotateCcw, Sparkles, Star, Trash2 } from "lucide-react";
+import { Flag, RotateCcw, Sparkles, Star, Trash2 } from "lucide-react";
 
+import { AvisoToast } from "@/components/ui/aviso-toast";
+import { AdminListSkeleton } from "@/components/skeletons/admin-skeletons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getAnunciosAdmin, getDenuncias } from "@/lib/api/admin";
@@ -72,11 +74,7 @@ export default function AdminAnunciosPage() {
   }
 
   if (!anuncios) {
-    return (
-      <div className="flex min-h-[40vh] items-center justify-center">
-        <Loader2 className="size-6 animate-spin text-muted-foreground" />
-      </div>
-    );
+    return <AdminListSkeleton linhas={4} />;
   }
 
   return (
@@ -167,11 +165,7 @@ export default function AdminAnunciosPage() {
         })}
       </div>
 
-      {aviso && (
-        <div className="fixed left-1/2 top-20 z-50 -translate-x-1/2 rounded-full bg-inverse-surface px-4 py-2.5 text-inverse-on-surface shadow-lg">
-          <span className="font-display text-sm font-bold">{aviso}</span>
-        </div>
-      )}
+      <AvisoToast mensagem={aviso} />
     </div>
   );
 }
